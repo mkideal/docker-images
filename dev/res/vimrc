@@ -1,0 +1,186 @@
+runtime! debian.vim
+
+set nocompatible
+filetype off
+
+set rtp+=~/.vim/bundle/vundle/
+call vundle#rc()
+
+set fileencodings=utf8,gbk,gb2312
+
+" Plugins
+
+Plugin 'gmarik/vundle'
+Plugin 'tsaleh/vim-align'
+Plugin 'scrooloose/nerdcommenter'
+Plugin 'scrooloose/nerdtree'
+Plugin 'tpope/vim-surround'
+Plugin 'godlygeek/tabular'
+Plugin 'mbbill/undotree'
+Plugin 'vim-airline/vim-airline'
+Plugin 'tpope/vim-fugitive'
+Plugin 'airblade/vim-gitgutter'
+Plugin 'nathanaelkane/vim-indent-guides'
+Plugin 'terryma/vim-multiple-cursors'
+Plugin 'jistr/vim-nerdtree-tabs'
+Plugin 'guns/xterm-color-table.vim'
+Plugin 'scrooloose/syntastic'
+Plugin 'yuezk/weex.vim'
+Plugin 'mhinz/vim-startify'
+Plugin 'xolox/vim-misc'
+Plugin 'xolox/vim-lua-ftplugin'
+Plugin 'elzr/vim-json'
+Plugin 'majutsushi/tagbar'
+Plugin 'Lokaltog/vim-powerline'
+Plugin 'Lokaltog/vim-easymotion'
+Plugin 'vim-scripts/a.vim'
+Plugin 'Townk/vim-autoclose'
+Plugin 'troydm/easybuffer.vim'
+Plugin 'ervandew/supertab'
+Plugin 'MarcWeber/vim-addon-mw-utils'
+Plugin 'tomtom/tlib_vim'
+Plugin 'garbas/vim-snipmate'
+Plugin 'honza/vim-snippets'
+Plugin 'vim-scripts/lua.vim'
+Plugin 'tomasr/molokai'
+Plugin 'rbgrouleff/bclose.vim'
+Plugin 'maksimr/vim-jsbeautify'
+Plugin 'dgryski/vim-godef'
+Plugin 'fatih/vim-go'
+Plugin 'rust-lang/rust.vim'
+Plugin 'Valloric/YouCompleteMe'
+Plugin 'NigoroJr/color_coded-colorschemes'
+Plugin 'rdnetto/YCM-Generator'
+Plugin 'posva/vim-vue'
+Plugin 'kana/vim-operator-user'
+Plugin 'rhysd/vim-clang-format'
+Plugin 'midlang/vim-mid'
+
+"Plugin 'racer-rust/vim-racer'
+"Plugin 'jeaye/color_coded'
+
+set nocompatible
+
+if has("syntax")
+	syntax on
+endif
+
+filetype plugin indent on
+
+colorscheme molokai
+" colorscheme SerialExperimentsLain
+
+let g:molokai_original = 1
+
+set background=dark
+
+set tabstop=4
+set softtabstop=4
+set shiftwidth=4
+set cindent
+set cinoptions={0,1s,t0,n-2,p2s,(03s,=.5s,>1s,=1s,:1s
+set backspace=2
+set showmatch
+set linebreak
+set mouse=a
+set number
+set history=50
+set cursorline
+set laststatus=2
+set ruler
+set showcmd
+set showmode
+set incsearch
+set hlsearch
+
+inoremap ( ()<ESC>i
+inoremap [ []<ESC>i
+inoremap { {}<ESC>i
+inoremap " ""<ESC>i
+inoremap ' ''<ESC>i
+
+" 基于缩进或语法进行代码折叠
+"set foldmethod=indent
+set foldmethod=syntax
+" 启动 vim 时关闭折叠代码
+set nofoldenable
+set foldlevel=1
+
+map be :EsayBufferToggle<cr>
+
+set t_Co=256
+let g:Powline_symbols='fancy'
+let g:SuperTabDefaultCompletionType = "context"
+
+autocmd BufWritePre *.go :GoFmt
+let g:tagbar_type_go = {
+	\ 'ctagstype': 'go',
+	\ 'kinds': [
+		\ 'p:package',
+		\ 'i:imports:1',
+		\ 'c:constants',
+		\ 'v:variables',
+		\ 't:types',
+		\ 'n:interfaces',
+		\ 'w:fields',
+		\ 'e:embedded',
+		\ 'm:methods',
+		\ 'r:constructor',
+		\ 'f:functions'
+	\ ],
+	\ 'sro': '.',
+	\ 'kind2scope': {'t': 'ctype', 'n': 'ntype'},
+	\ 'scope2kind': {'ctype': 't', 'ntype': 'n'},
+	\ 'ctagsbin': 'gotags',
+	\ 'ctagsargs': '-sort -silent'
+\ }
+
+let g:go_highlight_functions = 1
+let g:go_highlight_methods = 1
+let g:go_highlight_structs = 1
+let g:go_highlight_operators = 1
+let g:go_highlight_fields = 1
+
+nnoremap FileType javascript noremap <buffer> <c-f> :call JsBeautify()<cr>
+nnoremap FileType html noremap <buffer> <c-f> :call HtmlBeautify()<cr>
+nnoremap FileType css noremap <buffer> <c-f> :call CSSBeautify()<cr>
+
+autocmd BufWritePre *.json :call JsonBeautify()
+autocmd BufWritePre *.css :call CSSBeautify()
+"autocmd BufWritePre *.js :call JsBeautify()
+"autocmd BufWritePre *.html :call HtmlBeautify()
+
+map gd :YcmCompleter GoTo<CR>
+map gt :YcmCompleter GetType<CR>
+
+let g:vim_json_syntax_conceal = 0
+let g:markdownfmt_fail_silently = 0
+
+let g:markdown_fenced_languages = ['go', 'c', 'cpp', 'java', 'javascript', 'js=javascript', 'sh', 'bash=sh', 'html', 'xml', 'json', 'proto', 'sql', 'lua']
+
+let g:ycm_server_python_interpreter='/usr/bin/python'
+let g:ycm_global_ycm_extra_conf='~/.vim/.ycm_extra_conf.py'
+let g:ycm_confirm_extra_conf = 0
+
+"let g:clang_format#code_style = 'llvm'
+let g:clang_format#style_options = {
+	\ "IndentWidth": 4,
+	\ "MaxEmptyLinesToKeep": 1,
+	\ "AllowShortFunctionsOnASingleLine": "true",
+	\ "AlignTrailingComments": "true",
+	\ "AlignOperands": "true",
+	\ "AlwaysBreakTemplateDeclarations" : "true",
+	\ "BreakBeforeBraces" : "Attach",
+	\ "TabWidth": 4,
+	\ "Standard" : "C++11"}
+
+" 保存文件时自动格式化
+let g:clang_format#auto_format=0
+
+let g:vim_json_syntax_conceal = 0
+
+"autocmd BufWritePre *.json :%!fmtjson 2>/dev/null
+
+let g:syntastic_error_symbol = '✗'
+
+let g:rustfmt_autosave = 1
