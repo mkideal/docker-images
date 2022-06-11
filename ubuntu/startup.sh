@@ -4,7 +4,7 @@ function main() {
 	local _repo=ubuntu-dev
 	local _name=ubuntu-dev
 	local _hostname=$_name
-	local _shared=$GOPATH/shared
+	local _shared=$HOME
 
 	mkdir -p $_shared
 

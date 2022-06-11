@@ -1,0 +1,13 @@
+[user]
+	name = mkideal
+	email = i@mkideal.com
+[alias]
+	co = checkout
+	br = branch
+	ci = commit
+	st = status
+	last = log -1 HEAD
+	ps = push
+	pl = pull
+	ls = log --pretty=format:'%s' --abbrev-commit --date=format:'%Y/%m/%d %H:%M:%S'
+	ll = log --pretty=format:'%C(cyan)%h%Creset %Cgreen(%cd)%Creset%C(yellow)%d%Creset %s %C(bold)%C(magenta)<%an>%Creset' --abbrev-commit --date=format:'%Y/%m/%d %H:%M:%S'
