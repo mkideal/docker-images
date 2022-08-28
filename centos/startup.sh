@@ -14,7 +14,7 @@ function main() {
 			docker start ${_name}
 		else
 			echo "run docker container ${_name}"
-			docker run -h $_hostname --init --name $_name -d -v ${_shared}:/shared \
+			docker run --platform linux/amd64 -h $_hostname --init --name $_name -d -v ${_shared}:/shared \
 				-p 2222:22 \
 				$_repo
 		fi

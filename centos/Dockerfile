@@ -4,29 +4,30 @@
 
 FROM centos:7.9.2009
 
+COPY ../res/Centos-7.repo /etc/yum.repos.d/
+RUN yum --enablerepo=* clean all
 RUN yum update -y
 RUN yum install -y tar gzip gcc-c++ glibc-devel
-RUN yum -y install https://packages.endpointdev.com/rhel/7/os/x86_64/endpoint-repo.x86_64.rpm \
-	yum install git
+RUN yum install -y git
 
 ENV LD_LIBRARY_PATH /usr/local/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
 
-RUN yum install -y which \
-	&& yum install -y openssh-clients \
-	&& yum install -y openssh-server \
-	&& yum install -y wget \
-	&& yum install -y epel-release \
-	&& yum install -y sudo \
-	&& yum install -y vim \
-	&& yum install -y autoconf \
-	&& yum install -y automake \
-	&& yum install -y libtool \
-	&& yum install -y lz4 lz4-devel \
-	&& yum install -y java \
-	&& yum install -y pwgen \
-	&& yum -y install yum-utils \
-	&& cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
-	&& yum install ntp -y \
+RUN yum install -y which
+RUN yum install -y openssh-clients
+RUN yum install -y openssh-server
+RUN yum install -y wget
+RUN yum install -y epel-release
+RUN yum install -y sudo
+RUN yum install -y vim
+RUN yum install -y autoconf
+RUN yum install -y automake
+RUN yum install -y libtool
+RUN yum install -y lz4 lz4-devel
+RUN yum install -y java
+RUN yum install -y pwgen
+RUN yum -y install yum-utils
+RUN yum install ntp -y
+RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
     && ssh-keygen -f /etc/ssh/ssh_host_rsa_key \
     && ssh-keygen -t dsa -f /etc/ssh/ssh_host_dsa_key \
 	&& chmod 600 /etc/ssh/ssh_host* \
@@ -48,16 +49,6 @@ RUN echo "Installing cmake${CMAKE_VERSION}..." \
 	&& cd .. \
 	&& rm -rf cmake-${CMAKE_VERSION}*
 
-# Install go
-ENV GO_VERSION=1.18.1
-RUN echo "Installing go${GO_VERSION}..." \
-	&& cd /tmp/ \
-	&& wget https://dl.google.com/go/go${GO_VERSION}.linux-arm64.tar.gz \
-	&& tar zxf go${GO_VERSION}.linux-arm64.tar.gz \
-	&& mv go /usr/local/ \
-	&& /usr/local/go/bin/go env -w GOPROXY="https://goproxy.cn,direct" \
-	&& rm go*.tar.gz
-
 # Install gcc-11
 ENV GCC_VERSION=11.2.0
 RUN echo "Installing gcc${GCC_VERSION}"
@@ -65,20 +56,21 @@ RUN mkdir /tmp/gcc && \
     cd /tmp/gcc && \
     curl http://mirrors.concertpass.com/gcc/releases/gcc-${GCC_VERSION}/gcc-${GCC_VERSION}.tar.gz | tar -zxf -
 RUN yum install -y bzip2
-RUN BINUTILSVER=2.28 && \
-    curl http://ftp.gnu.org/gnu/binutils/binutils-$BINUTILSVER.tar.gz | tar -zxf - && \
-    cd /tmp/gcc/gcc-${GCC_VERSION} && \
+ENV BINUTILSVER=2.39
+RUN wget http://ftp.gnu.org/gnu/binutils/binutils-$BINUTILSVER.tar.gz
+RUN tar zxf binutils-$BINUTILSVER.tar.gz
+RUN cd /tmp/gcc/gcc-${GCC_VERSION} && \
     for i in bfd binutils cpu elfcpp etc gas gold gprof ld opcodes texinfo; \
         do ln -s /tmp/gcc/binutils-$BINUTILSVER/$i; done && \
     sed -i 's/wget/curl -O/g' contrib/download_prerequisites && \
     contrib/download_prerequisites && \
     mkdir /tmp/gcc/build && \
     cd /tmp/gcc/build && \
-    ../gcc-${GCC_VERSION}/configure --disable-multilib --enable-languages=c,c++,fortran && \
-    make -j `nproc` && \
-    make install && \
-    yum erase -y gcc-c++ --setopt=clean_requirements_on_remove=1 && \
-    yum clean all && \
+    ../gcc-${GCC_VERSION}/configure --disable-multilib --enable-languages=c,c++,fortran
+RUN cd /tmp/gcc/build && make -j `nproc` && make install
+
+RUN yum erase -y gcc-c++ --setopt=clean_requirements_on_remove=1 \
+RUN yum clean all \
     rm -rf /tmp/gcc
 
 # Create user

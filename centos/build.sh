@@ -1,3 +1,3 @@
 #!/bin/bash
 
-docker build . -t centos-dev
+docker build . --platform linux/amd64 -t centos-dev-7
